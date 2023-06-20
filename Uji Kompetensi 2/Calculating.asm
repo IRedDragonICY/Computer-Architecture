@@ -40,6 +40,7 @@ string_input_C   DB 13,10,'Masukkan C : $'
 string_input_D   DB 13,10,'Masukkan D : $'
 string_input_E   DB 13,10,'Masukkan E : $'
 string_res       DB 13,10,'Y=$'
+sring_undefined  DB 'Undefined$'
 ; Temporary Variables;
 TEMP dw ?
 TEMP2 dw ?
@@ -185,6 +186,8 @@ start:
         mov ax, D
         imul E
         mov TEMP2,ax
+        cmp ax, 0
+        je undefined
 
         ; Y = (A x B + C)/(D x C)
         ; dx is ignored (calc works with tiny integer numbers only).
@@ -223,6 +226,11 @@ not_signed:
 
         call print_float    ; print ax value.
         jmp exit
+undefined:
+        ; print "Undefined" if E is zero:
+        lea dx, sring_undefined
+        mov ah, 09h
+        int 21h
 
 exit:
         ; output of a string at ds:dx
